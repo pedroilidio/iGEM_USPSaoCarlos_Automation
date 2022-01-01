@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Preserve private tokens
+NOTION_TOKEN.txt
+TELEGRAM_TOKEN.txt

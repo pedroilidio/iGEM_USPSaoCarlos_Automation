@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 """
-Simple Bot to reply to Telegram messages.
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
+Telegram bot to fulfill or add references to a reference database in Notion.
+
+Config file must contain:
+    telegram_token: Telegram bot's token provided by the BotFather.
+    notion_token: (Notion's API integration token).
+    references_page_id: the Notion database's ID that can be found in its URL.
 
 Based on:
   https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/echobot.py
@@ -23,14 +21,8 @@ from telegram.ext import (
 from notion_client import Client
 from update_references import ReferencesDatabase
 
-REFERENCES_PAGE_ID = '610b6086600f45d48065b7a46eb1e8bd'
-TELEGRAM_TOKEN_PATH = 'TELEGRAM_TOKEN.txt'
-NOTION_TOKEN_PATH = 'NOTION_TOKEN.txt'
-
-with open(TELEGRAM_TOKEN_PATH) as token_file:
-    TELEGRAM_TOKEN = token_file.read().strip()
-with open(NOTION_TOKEN_PATH) as token_file:
-    NOTION_TOKEN = token_file.read().strip()
+SCRIPT_DIR = Path(__file__).parent
+CONFIG_PATH = SCRIPT_DIR/"config.yml"
 
 # Enable logging
 logging.basicConfig(
@@ -87,8 +79,11 @@ def fill_incomplete_references(
 
 def main() -> None:
     """Start the bot."""
+    with open(CONFIG_PATH) as config_file:
+        config = yaml.safe_load(config_file)
+
     # Create the Updater and pass it your bot's token.
-    updater = Updater(TELEGRAM_TOKEN)
+    updater = Updater(config['telegram_token'])
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -99,10 +94,10 @@ def main() -> None:
         Filters.text & ~Filters.command, unknown_command))
 
     print('Authenticating...', end=' ')
-    notion = Client(auth=NOTION_TOKEN)
+    notion = Client(auth=config['notion_token'])
     references_database = ReferencesDatabase(
         client=notion,
-        database_id=REFERENCES_PAGE_ID,
+        database_id=config['references_page_id'],
     )
     print('Done.')
 

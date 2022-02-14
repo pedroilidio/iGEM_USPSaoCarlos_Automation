@@ -1,0 +1,6 @@
+# Telegram bot's token provided by the BotFather.
+telegram_token: **********************************************
+# Notion's API integration token.
+notion_token: **************************************************
+# The Notion database's ID that can be found in its URL.
+references_page_id: ********************************

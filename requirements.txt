@@ -1,0 +1,5 @@
+notion-client
+python-telegram-bot
+requests
+pyyaml
+bibtexparser

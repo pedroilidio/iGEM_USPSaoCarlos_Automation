@@ -11,8 +11,9 @@ Based on:
   https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/echobot.py
 """
 
-import logging
+import logging, yaml
 from functools import partial
+from pathlib import Path
 
 from telegram import Update, ForceReply
 from telegram.ext import (
